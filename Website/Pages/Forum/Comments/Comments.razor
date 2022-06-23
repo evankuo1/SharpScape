@@ -1,0 +1,140 @@
+﻿@page "/Comments"
+@using SharpScape.Website.Services
+@using SharpScape.Shared.Dto
+@inject HttpClient Http
+
+<h1>Forum Category</h1>
+
+  <button @onclick="@AddComment" class="btn btn-sm btn-danger btn-delete-user">
+                            --add Category--
+                        </button>
+@if(add)
+{
+     
+    <EditForm model="@tempCommentor" OnSubmit="@Save">
+    <div class="form-group row">
+            <label class="col-sm2 col-form-label" for="Name"> Name:</label>
+
+            <div class="col-sm-5">
+
+
+                <InputText class="form-control" @bind-Value="tempCommentor.Name" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm2 col-form-label" for="Comment">Comment:</label>
+            <div class="col-sm-5">
+
+
+                <InputText class="form-control" @bind-Value="tempCommentor.Comment" />
+            </div>
+        </div>
+
+        @*<div class="form-group row">
+            <label class="col-sm2 col-form-label" for="CategoryAuthor">Author:</label>
+            <div class="col-sm-5">
+
+
+                <InputText class="form-control" @bind-Value="tempForum.ForumCategoryAuthor" />
+            </div>
+        </div>*@
+
+
+
+
+
+        <input type="submit" class="btn btn-primary" value="Save" />
+        </EditForm>
+}
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width: 20%"> Name</th>
+            <th style="width: 20%">Id</th>
+            <th style="width: 35%">Comment</th>
+            
+            
+        </tr>
+    </thead>
+    <tbody>
+        @if (comments != null)
+        {
+            foreach (var comment in comments)
+            {
+                <tr>
+                    <td>@comment.Name</td>
+                    <td>@comment.Id</td>
+                    <td>@comment.Comment</td>
+                    <td style="white-space: nowrap">
+
+                        <button @onclick="@(() => DeleteCategory(comment))" class="btn btn-sm btn-danger btn-delete-user">
+                            --delete--
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        }
+        @if (loading)
+        {
+            <tr>
+                <td colspan="4" class="text-center">
+                    <span class="spinner-border spinner-border-lg align-center"></span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        comments = await Http.GetFromJsonAsync<List<CommentorInfoDto>>("https://localhost:7193/api/Commentor");
+        comments.Add(new CommentorInfoDto() { Id = 1, Name = "Bob", Comment = "Comment description" });
+
+        loading = false;
+    }
+
+
+
+
+    public CommentorInfoDto tempCommentor = new CommentorInfoDto();
+    private bool loading;
+
+    private bool add = false;
+
+    public IList<CommentorInfoDto> comments = new List<CommentorInfoDto>();
+    
+
+
+
+
+    private async void DeleteCategory(CommentorInfoDto x)
+    {
+        comments.Remove(x);
+        StateHasChanged();
+    }
+
+    private async void AddComment()
+    {
+
+      
+        add = true;
+        StateHasChanged();
+
+
+    }
+    private async void Save()
+        {
+        //tempForum.Id =Guid.NewGuid();
+        comments.Add(tempCommentor);
+        add = false;
+        StateHasChanged();
+
+        }
+
+}

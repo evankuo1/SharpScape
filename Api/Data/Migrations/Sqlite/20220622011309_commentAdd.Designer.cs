@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SharpScape.Api.Data;
 
@@ -10,9 +11,10 @@ using SharpScape.Api.Data;
 namespace SharpScape.Api.Data.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    partial class SqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220622011309_commentAdd")]
+    partial class commentAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.6");
@@ -34,26 +36,6 @@ namespace SharpScape.Api.Data.Migrations.Sqlite
                     b.HasKey("Id");
 
                     b.ToTable("Commentor");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Comment = "Testing out db 1",
-                            Name = "Bob"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Comment = "Testing out db 2",
-                            Name = "John"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Comment = "Testing out db 3",
-                            Name = "Sandra"
-                        });
                 });
 
             modelBuilder.Entity("SharpScape.Api.Models.Thread", b =>
